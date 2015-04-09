@@ -2,16 +2,17 @@ package obj
 
 import (
   "strings"
-  //"encoding/json"
+  "encoding/json"
 )
 
 type IObject interface {
-  Change(field string, value interface{}) interface{}
-  Remove() interface{}
-  Save() interface{}
+  Change(field string, value interface{}) IObject
+  Destroy() IObject
+  Save() IObject
+  Marshal() string
 }
 
-type AbstractObject struct {
+type Task struct {
   Code string `json:"code"`
   Title string `json:"title"`
   Desc string `json:"desc"`
@@ -19,31 +20,40 @@ type AbstractObject struct {
   State string `json:"state"`
 }
 
-type Task struct {
-  AbstractObject
-}
-
-var types = make(map[string]IObject)
+var types = make(map[string]func()*Task)
 
 func Init() {
-  types["task"] = new(Task)
+  types["task"] = func() *Task {
+    return &Task{}
+  }
 }
 
-func Create() IObject {
-  obj := new(Task)
+func CreateByName(objName string) IObject {
+  nameParts := strings.Split(objName, ":")
+  typeName, code := nameParts[0], nameParts[1]
+  println("Create object with type (", typeName, ")", code)
+  obj := &Task{ Code: code }
   return obj
 }
 
-func (o *AbstractObject) Change(field string, value interface{}) interface{} {
+func (o *Task) Change(field string, value interface{}) IObject {
   return o
 } 
 
-func (o *AbstractObject) Remove() interface{} {
+func (o *Task) Destroy() IObject {
   return o
 }
 
-func (o *AbstractObject) Save() interface{} {
+func (o *Task) Save() IObject {
   return o
+}
+
+func (o *Task) Marshal() string {
+  b, err := json.Marshal(o)
+  if err != nil {
+    panic(err)
+  }
+  return string(b)
 }
 
 func NameParse(objName string) (string, string) {

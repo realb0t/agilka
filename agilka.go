@@ -21,8 +21,8 @@ func main() {
       Usage:   "add a task to the list",
       Action:  func(c *cli.Context) {
         objName := c.Args().First()
-        objectType, objectCode := obj.NameParse(objName)
-        println("added object: ", objectType, objectCode)
+        o := obj.CreateByName(objName)
+        println("added object: ", o.Marshal())
       },
     },
     {
