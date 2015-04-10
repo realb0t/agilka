@@ -1,6 +1,10 @@
 package operation
 
-type Ticket struct {
-  ticket 
+import (
+  "github.com/realb0t/agilka/task"
+)
+
+type Task struct {
+  Task task.Task 
 }
 
