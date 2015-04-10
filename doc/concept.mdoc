@@ -19,13 +19,13 @@ Agilka имеет ряд соглашений, которые позволяют
 - Минимальными объетами являются таски и аттачи
 - Если таск не соответствует минимальному описанию,
 он считается не валидным
-- На таски можно ссылаться через решотку `#` или `task:`
+- На таски можно ссылаться через решотку `#` или `ticket:`
 - На коммиты можно ссылаться через доллар `$` или `commit:`
 - На Пользователя можно ссылаться через собаку `@` или `user:`
 - При добавлении несоставного объекта он должен
 иметь файл с расширением *.a<typeName>
 - Несоставные объекты должны лежать в папках по 
-названию типа, например tasks, comments, logs
+названию типа, например tickets, comments, logs
 - Ссылаться на состаные объекты можно также 
 по типу `<objectType>:<objectAliace>`
 - Если задаче не задается поле code - оно генерируется 
@@ -88,7 +88,7 @@ $ agilka ticket rm <objectAliace>
 
 ## Структура файлов
 
-`/tasks/*.atask`
+`/ticket/*.aticket`
 `/attaches/**.*`
 `/project_name.aconf`
 `/.git`
@@ -102,7 +102,7 @@ $ agilka ticket rm <objectAliace>
 
 ```json
 {
-  "code": "taskCodeName",
+  "code": "ticketCodeName",
   "title": "Заголовок таска",
   "desc": "# Описание таска\nС поддержкой **mdoc**",
   "author": "gitUserName",
@@ -114,12 +114,12 @@ $ agilka ticket rm <objectAliace>
 
 ```json
 {
-  "code": "task_code_name",
+  "code": "ticket_code_name",
   "title": "Заголовок таска",
   "desc": "# Описание таска\nС поддержкой **mdoc**",
-  "parentTask": "<ID/code>",
-  "dublicatTask": "<ID/code>",
-  "blockedTask": "<ID/code>",
+  "parentTicket": "<ID/code>",
+  "dublicatTicket": "<ID/code>",
+  "blockedTicket": "<ID/code>",
   "author": "gitUserName",
   "assignTo": "gitUserName",
   "reportTo": "gitUserName",
