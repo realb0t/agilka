@@ -29,29 +29,37 @@ func main() {
   app := cli.NewApp()
   app.Commands = []cli.Command{
     {
-      Name:    "new",
-      Aliases: []string{"a"},
-      Usage:   "add a task to the list",
-      Flags:   []cli.Flag{
-        cli.StringSliceFlag{
-          Name: "field, f",
-          Value: &cli.StringSlice{},
-          Usage: "Fields defenitions",
+      Name:      "ticket",
+      Aliases:     []string{"r"},
+      Usage:     "operations for ticker ticket",
+      Subcommands: []cli.Command{
+        {
+          Name:    "create",
+          Aliases: []string{"a"},
+          Usage:   "create a new ticket",
+          Flags:   []cli.Flag {
+            cli.StringFlag{
+              Name: "json",
+              Value: "{}",
+              Usage: "JSON object for ticket",
+            },
+          },
+          Action:  func(c *cli.Context) {
+            values := c.Args()
+            jsonVal := c.String("json")
+            fmt.Println("added object values: ", values)
+            fmt.Println("added jsonVal: ", jsonVal)
+          },
         },
-      },
-      Action:  func(c *cli.Context) {
-        fmt.Println("flags", parseFieldsFlags(c))
-        objName := c.Args().First()
-        o := obj.CreateByName(objName)
-        println("added object: ", o.Marshal())
-      },
-    },
-    {
-      Name:    "complete",
-      Aliases: []string{"c"},
-      Usage:   "complete a task on the list",
-      Action:  func(c *cli.Context) {
-        println("completed task: ", c.Args().First())
+        {
+          Name:    "edit",
+          Aliases: []string{"c"},
+          Usage:   "complete a task on the list",
+          Action:  func(c *cli.Context) {
+            objCode := c.Args().First()
+            println("edit ticket by code: ", objCode)
+          },
+        },
       },
     },
   }

@@ -27,13 +27,15 @@ Agilka имеет ряд соглашений, которые позволяют
 - Несоставные объекты должны лежать в папках по 
 названию типа, например tasks, comments, logs
 - Ссылаться на состаные объекты можно также 
-по типу `<objectType>:<objectCode>`
-- Если объекту не задается поле code - оно генерируется 
+по типу `<objectType>:<objectAliace>`
+- Если задаче не задается поле code - оно генерируется 
 автоматически в виде числа
-- Поля JSON файлов нужно писать CamelCase
+- Поля JSON файлов нужно писать сamelCase
 - Все строчки начинающиеся с `//` в значениях 
 полей являются комментариями и не учитываются 
 в дальнейшем
+- Все поля задачи должны в JSON должны иметь 
+текстовый тип
 
 ## Инструменты
 
@@ -43,47 +45,45 @@ Agilka имеет ряд соглашений, которые позволяют
 
 Инструменты для Agilka консольные:
 
+Создает проект в текущей директории
+```
+$ agilka init
+```
+
 Создать объект - все поля будут задаваться по очереди.
 Code будет сгенерирован
 ```
-$ agilka new <objectType>
-```
-
-Создать объект с указанным кодом
-```
-$ agilka new <objectType>:<objectCode>
-```
-
-Создать объект по JSON
-
-Создать объект с указанным кодом
-```
-$ agilka new <objectType>:<objectCode> -json '{ "title": "Hello" }'
+$ agilka ticket create code=gooVal title='Hello world' --json='{"code": "gooBar"}'
 ```
 
 Изменить все поля по очереди (в тестовом редакторе)
 ```
-$ agilka edit <objectType>:<objectCode>
+$ agilka ticket edit <objectAliace> fieldName=value
 ```
 
 Изменить конкретное поле (в тестовом редакторе)
 ```
-$ agilka edit <objectType>:<objectCode> -f 'comments[0].text'
+$ agilka ticket edit <objectAliace> -f fieldName
 ```
 
-Изменить конкретное поля на значение
+Вывести в todo
 ```
-$ agilka edit <objectType>:<objectCode> -d 'comments[0].text'='Value field'
+$ agilka ticket todo <objectAliace>
 ```
 
-Изменить конкретное поля на значение
+Вывести в process
 ```
-$ agilka edit <objectType>:<objectCode> -d field1='Value field' -d field2='Value field'
+$ agilka ticket process <objectAliace>
+```
+
+Вывести в complete
+```
+$ agilka ticket complete <objectAliace>
 ```
 
 Удалить объект
 ```
-$ agilka rm <objectType>:<objectCode>
+$ agilka ticket rm <objectAliace>
 ```
 
 ## Структура файлов
