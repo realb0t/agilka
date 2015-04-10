@@ -8,8 +8,7 @@ import (
   "strings"
   //"github.com/deiwin/interact"
   "github.com/codegangsta/cli"
-  "github.com/realb0t/agilka/obj"
-  //"strings"
+  //"github.com/realb0t/agilka/operation"
 )
 
 func parseFieldsFlags(c *cli.Context) map[string]string {
@@ -24,8 +23,6 @@ func parseFieldsFlags(c *cli.Context) map[string]string {
 }
 
 func main() {
-  obj.Init()
-
   app := cli.NewApp()
   app.Commands = []cli.Command{
     {
