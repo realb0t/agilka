@@ -12,7 +12,7 @@ func TestTaskMakeByPairs(t *testing.T) {
   task := NewTask(pairs)
 
   if false && task.Code != testCode {
-    t.Error("Not set code")
+    t.Error("Not correct code")
   }
 }
 
@@ -26,7 +26,7 @@ func TestTaskMakeByJSON(t *testing.T) {
   }`)
 
   if task.Code != testCode {
-    t.Error("Not set code")
+    t.Error("Not correct code")
   }
 }
 
@@ -36,7 +36,7 @@ func TestTaskToJson(t *testing.T) {
   jsonData, _ := task.ToJSON()
   newTask := NewTask(jsonData)
   if newTask.Code != testCode {
-    t.Error("Not set code")
+    t.Error("Not correct code")
   }
 }
 
@@ -45,7 +45,7 @@ func TestTaskApplyingDefaultCode(t *testing.T) {
   task := NewTask(pairs)
   task.ApplyDefaultCode(testCode)
   if task.Code != testCode {
-    t.Error("Not set code")
+    t.Error("Not correct code")
   }
 }
 
@@ -54,6 +54,6 @@ func TestTaskDontApplyingDefaultCode(t *testing.T) {
   task := NewTask(pairs)
   task.ApplyDefaultCode("otherCodeByDefault")
   if task.Code != testCode {
-    t.Error("Not set code")
+    t.Error("Not correct code")
   }
 }

@@ -1,3 +1,4 @@
+// Модель задачи. Базовые
 package task
 
 import (
