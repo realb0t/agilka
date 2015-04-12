@@ -49,7 +49,11 @@ func makeTaskByPairs(pairs []string) *Task {
 }
 
 // Создание нового эксземляра задачи
-func MakeTask(fields interface{}) *Task {
+//
+// Поддерживает следующие варианты:
+// - fields string || []byte = JSON
+// - fields []string = [ "field1=value1", "field2=value2" ]
+func NewTask(fields interface{}) *Task {
   var task *Task
 
   switch f := fields.(type) {
@@ -75,4 +79,13 @@ func MakeTask(fields interface{}) *Task {
 // Перевод задачи в формат JSON
 func (t *Task) ToJSON() ([]byte, error) {
   return json.MarshalIndent(t, "", "  ")
+}
+
+// Назначает поле code по-умолчанию, если это требуется
+func (t *Task) ApplyDefaultCode(code string) *Task {
+  if t.Code == "" {
+    t.Code = code
+  }
+
+  return t
 }
