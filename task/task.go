@@ -76,6 +76,12 @@ func NewTask(fields interface{}) *Task {
   return task
 }
 
+func NewTaskWithDefaultCode(defaultCode string, fields interface{}) *Task {
+  task := NewTask(fields)
+  task.ApplyDefaultCode(defaultCode)
+  return task
+}
+
 // Перевод задачи в формат JSON
 func (t *Task) ToJSON() ([]byte, error) {
   return json.MarshalIndent(t, "", "  ")
