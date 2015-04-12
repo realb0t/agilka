@@ -2,6 +2,10 @@ package task
 
 import (
   "encoding/json"
+  "reflect"
+  "strings"
+  "strconv"
+  //"fmt"
 )
 
 // Структура задачи
@@ -14,19 +18,53 @@ type Task struct {
 }
 
 // Создание 
-func makeTaskByPairs(pairs []string) Task {
-  return &Task{}
+func makeTaskByPairs(pairs []string) *Task {
+  task := &Task{}
+
+  for _, spair := range(pairs) {
+    apair := strings.Split(spair, "=")
+    name, val := apair[0], apair[1]
+    fieldName := strings.Title(name)
+    field := reflect.ValueOf(task).Elem().FieldByName(fieldName)
+    if field.IsValid() && field.CanSet() {
+      switch field.Kind() {
+        case reflect.Int:
+          ival, _ := strconv.ParseInt(val, 0, 64)
+          field.SetInt(ival)
+        case reflect.Float32:
+          fval, _ := strconv.ParseFloat(val, 32)
+          field.SetFloat(fval)
+        case reflect.Float64:
+          fval, _ := strconv.ParseFloat(val, 64)
+          field.SetFloat(fval)
+        case reflect.String:
+          field.SetString(val)
+        default:
+          panic("Not support type for: " + spair)
+      }
+    }
+  }
+
+  return task
 }
 
 // Создание нового эксземляра задачи
-func MakeTask(fields interface{}) Task {
-  var task Task
+func MakeTask(fields interface{}) *Task {
+  var task *Task
 
-  switch t := v.(type) {
+  switch f := fields.(type) {
+    case []byte:
+      err := json.Unmarshal(f, &task)
+      if err != nil {
+        panic(err)
+      }
     case string:
-      err := json.Unmarshal(byte(fields), &task)
+      err := json.Unmarshal([]byte(f), &task)
+      if err != nil {
+        panic(err)
+      }
     case []string:
-      task = makeTaskByPairs(fields)
+      task = makeTaskByPairs(f)
     default:
       task = &Task{}
   }
@@ -35,6 +73,6 @@ func MakeTask(fields interface{}) Task {
 }
 
 // Перевод задачи в формат JSON
-func (t &Task) ToJSON() []byte, err {
+func (t *Task) ToJSON() ([]byte, error) {
   return json.MarshalIndent(t, "", "  ")
 }
