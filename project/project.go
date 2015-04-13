@@ -8,18 +8,23 @@ import (
 type Project struct {
   Name string
   Path string
+  TasksPath string
+  AttachesPath string
   taskCount int
 }
 
 func NewProject(Name, Path string) *Project {
-  return &Project{Name, Path, 0}
+  tasksPath := path.Join(Path, "tasks")
+  attachesPath := path.Join(Path, "attaches")
+  return &Project{ Name, Path,
+    tasksPath, attachesPath, 0 }
 }
 
 // Создает структуру папок для проекта
 func (p *Project) build() {
   var err error
-  var paths = []string{ path.Join(p.Path, "tasks"), 
-    path.Join(p.Path, "attaches") }
+  var paths = []string{ p.TasksPath, 
+    p.AttachesPath }
   for _, path := range(paths) {
     err = os.MkdirAll(path, 0700)
     if err != nil {
