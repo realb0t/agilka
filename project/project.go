@@ -3,6 +3,7 @@ package project
 import (
   "os"
   "path"
+  "io/ioutil"
 )
 
 type Project struct {
@@ -34,7 +35,15 @@ func (p *Project) build() {
 }
 
 func (p *Project) taskPaths() []string {
-  var paths []string
+  infos, err := ioutil.ReadDir(p.TasksPath)
+  if err != nil {
+    panic(err)
+  }
+  paths := make([]string, len(infos))
+  for _, info := range(infos) {
+    aPath := path.Join(p.TasksPath, info.Name())
+    paths = append(paths, aPath)
+  }
   return paths
 }
 
