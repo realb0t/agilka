@@ -34,7 +34,12 @@ func (p *Project) taskPaths() []string {
 }
 
 func (p *Project) isExist() bool {
-  return false
+  _, err := os.Stat(p.Path)
+  if err != nil {
+    return !os.IsNotExist(err)
+  } else {
+    return true
+  }
 }
 
 // Производит инициализацию проекта
