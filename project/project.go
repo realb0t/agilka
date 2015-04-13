@@ -1,5 +1,10 @@
 package project
 
+import (
+  "os"
+  "path"
+)
+
 type Project struct {
   Name string
   Path string
@@ -11,9 +16,16 @@ func NewProject(Name, Path string) *Project {
 }
 
 // Создает структуру папок для проекта
-func (p *Project) build() (*Project, error) {
+func (p *Project) build() {
   var err error
-  return p, err
+  var paths = []string{ path.Join(p.Path, "tasks"), 
+    path.Join(p.Path, "attaches") }
+  for _, path := range(paths) {
+    err = os.MkdirAll(path, 0700)
+    if err != nil {
+      panic(err)
+    }
+  }
 }
 
 func (p *Project) taskPaths() []string {
@@ -26,16 +38,16 @@ func (p *Project) isExist() bool {
 }
 
 // Производит инициализацию проекта
-func (p *Project) Initialize() (*Project, error) {
+func (p *Project) Initialize() (error) {
   var err error
 
   if !p.isExist() {
-    _, err = p.build()
+    p.build()
   } else {
     p.taskCount = len(p.taskPaths())
   }
 
-  return p, err
+  return err
 }
 
 // Возвращает количество задач в проекте
