@@ -12,16 +12,17 @@ type Project struct {
   TasksPath string
   AttachesPath string
   taskCount int
+  attachesCount int
 }
 
 func NewProject(Name, Path string) *Project {
   tasksPath := path.Join(Path, "tasks")
   attachesPath := path.Join(Path, "attaches")
   return &Project{ Name, Path,
-    tasksPath, attachesPath, 0 }
+    tasksPath, attachesPath, 0, 0 }
 }
 
-// Создает структуру папок для проекта
+// Создает новый проект по казанному пути
 func (p *Project) build() {
   var err error
   var paths = []string{ p.TasksPath, 
@@ -34,19 +35,27 @@ func (p *Project) build() {
   }
 }
 
-func (p *Project) taskPaths() []string {
-  infos, err := ioutil.ReadDir(p.TasksPath)
+// Загружает существующий проект
+func (p *Project) load() {
+  p.taskCount = len(p.objectsPaths(p.TasksPath))
+  p.attachesCount = len(p.objectsPaths(p.AttachesPath))
+}
+
+// Возвращает пути к файлам из директории
+func (p *Project) objectsPaths(objPath string) []string {
+  infos, err := ioutil.ReadDir(objPath)
   if err != nil {
     panic(err)
   }
   paths := make([]string, len(infos))
   for _, info := range(infos) {
-    aPath := path.Join(p.TasksPath, info.Name())
+    aPath := path.Join(objPath, info.Name())
     paths = append(paths, aPath)
   }
   return paths
 }
 
+// Проверяет наличие папки проекта
 func (p *Project) isExist() bool {
   _, err := os.Stat(p.Path)
   if err != nil {
@@ -56,15 +65,20 @@ func (p *Project) isExist() bool {
   }
 }
 
-// Производит инициализацию проекта
+
+// Производит создание проекта
+// на пустой директории
+//
+// И загружает созданный или ранее
+// существующий проект
 func (p *Project) Initialize() (error) {
   var err error
 
   if !p.isExist() {
     p.build()
-  } else {
-    p.taskCount = len(p.taskPaths())
   }
+
+  p.load()
 
   return err
 }
