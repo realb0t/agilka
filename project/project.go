@@ -9,8 +9,8 @@ import (
 type Project struct {
   Name string
   Path string
-  TasksPath string
-  AttachesPath string
+  tasksPath string
+  attachesPath string
   taskCount int
   attachesCount int
 }
@@ -25,8 +25,8 @@ func NewProject(Name, Path string) *Project {
 // Создает новый проект по казанному пути
 func (p *Project) build() {
   var err error
-  var paths = []string{ p.TasksPath, 
-    p.AttachesPath }
+  var paths = []string{ p.tasksPath, 
+    p.attachesPath }
   for _, path := range(paths) {
     err = os.MkdirAll(path, 0700)
     if err != nil {
@@ -37,8 +37,8 @@ func (p *Project) build() {
 
 // Загружает существующий проект
 func (p *Project) load() {
-  p.taskCount = len(p.objectsPaths(p.TasksPath))
-  p.attachesCount = len(p.objectsPaths(p.AttachesPath))
+  p.taskCount = len(p.objectsPaths(p.tasksPath))
+  p.attachesCount = len(p.objectsPaths(p.attachesPath))
 }
 
 // Возвращает пути к файлам из директории
