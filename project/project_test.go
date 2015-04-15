@@ -26,5 +26,6 @@ func TestInitialize(t *testing.T) {
   if _, err := os.Stat(attachesPath); os.IsNotExist(err) {
     t.Error("Not create Attaches dir")
   }
+
   _ = os.RemoveAll(workPath)
 }

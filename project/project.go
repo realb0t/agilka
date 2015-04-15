@@ -4,11 +4,13 @@ import (
   "os"
   "path"
   "io/ioutil"
+  "github.com/realb0t/agilka/config"
 )
 
 type Project struct {
   Name string
   Path string
+  Config *config.Config
   tasksPath string
   attachesPath string
   taskCount int
@@ -18,21 +20,26 @@ type Project struct {
 func NewProject(Name, Path string) *Project {
   tasksPath := path.Join(Path, "tasks")
   attachesPath := path.Join(Path, "attaches")
-  return &Project{ Name, Path,
+  return &Project{ Name, Path, nil,
     tasksPath, attachesPath, 0, 0 }
 }
 
 // Создает новый проект по казанному пути
 func (p *Project) build() {
-  var err error
+
+  // Создает папки
   var paths = []string{ p.tasksPath, 
     p.attachesPath }
   for _, path := range(paths) {
-    err = os.MkdirAll(path, 0700)
+    err := os.MkdirAll(path, 0700)
     if err != nil {
       panic(err)
     }
   }
+
+  // Создает конфигурационный файл
+  p.Config = config.NewConfig(p.Name, "")
+  p.Config.Save(p.Path)
 }
 
 // Загружает существующий проект
