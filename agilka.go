@@ -31,7 +31,7 @@ func main() {
       Flags:   []cli.Flag {
         cli.StringFlag{
           Name: "name",
-          Value: "MyProject",
+          Value: "AgilkaProject",
           Usage: "Project Name",
         },
       },
