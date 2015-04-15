@@ -1,7 +1,6 @@
 package main
 
 import (
-  //"fmt"
   //"encoding/json"
   "os"
   "fmt"
@@ -46,12 +45,13 @@ func main() {
       Action:  func(c *cli.Context) {
         projectName := c.String("name")
         projectPath := c.String("path")
-        fmt.Println("Create project:", projectName)
         pr := project.NewProject(projectName, projectPath)
         if pr.IsExist() {
-          panic("Project has been exist")
+          fmt.Println("Project has been exist")
+        } else {
+          fmt.Println("Create project:", projectName)
+          pr.Initialize()
         }
-        pr.Initialize()
       },
     },
     {
