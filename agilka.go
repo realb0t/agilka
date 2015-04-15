@@ -26,8 +26,23 @@ func main() {
   app := cli.NewApp()
   app.Commands = []cli.Command{
     {
+      Name:    "init",
+      Usage:   "Initialize new project in current dirrectory",
+      Flags:   []cli.Flag {
+        cli.StringFlag{
+          Name: "name",
+          Value: "MyProject",
+          Usage: "Project Name",
+        },
+      },
+      Action:  func(c *cli.Context) {
+        projectName := c.String("name")
+        projectPath, _ := os.Getwd()
+        fmt.Println("Initialize project", projectName, projectPath)
+      },
+    },
+    {
       Name:      "ticket",
-      Aliases:     []string{"r"},
       Usage:     "operations for ticker ticket",
       Subcommands: []cli.Command{
         {
