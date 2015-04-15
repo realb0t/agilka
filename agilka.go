@@ -8,7 +8,7 @@ import (
   "strings"
   //"github.com/deiwin/interact"
   "github.com/codegangsta/cli"
-  //"github.com/realb0t/agilka/operation"
+  "github.com/realb0t/agilka/project"
 )
 
 func parseFieldsFlags(c *cli.Context) map[string]string {
@@ -32,13 +32,26 @@ func main() {
         cli.StringFlag{
           Name: "name",
           Value: "AgilkaProject",
-          Usage: "Project Name",
+          Usage: "Project name",
+        },
+        cli.StringFlag{
+          Name: "path",
+          Value: func() string {
+            projectPath, _ := os.Getwd()
+            return projectPath
+          }(),
+          Usage: "Project current PATH",
         },
       },
       Action:  func(c *cli.Context) {
         projectName := c.String("name")
-        projectPath, _ := os.Getwd()
-        fmt.Println("Initialize project", projectName, projectPath)
+        projectPath := c.String("path")
+        fmt.Println("Create project:", projectName)
+        pr := project.NewProject(projectName, projectPath)
+        if pr.IsExist() {
+          panic("Project has been exist")
+        }
+        pr.Initialize()
       },
     },
     {

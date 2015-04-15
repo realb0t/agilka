@@ -63,8 +63,8 @@ func (p *Project) objectsPaths(objPath string) []string {
 }
 
 // Проверяет наличие папки проекта
-func (p *Project) isExist() bool {
-  _, err := os.Stat(p.Path)
+func (p *Project) IsExist() bool {
+  _, err := os.Stat(p.tasksPath)
   if err != nil {
     return !os.IsNotExist(err)
   } else {
@@ -81,7 +81,7 @@ func (p *Project) isExist() bool {
 func (p *Project) Initialize() (error) {
   var err error
 
-  if !p.isExist() {
+  if !p.IsExist() {
     p.build()
   }
 
