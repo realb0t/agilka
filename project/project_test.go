@@ -7,17 +7,18 @@ import (
 )
 
 func TestNewProject(t *testing.T) {
-  _ = NewProject("TestProject", "./testProject")
+  _ = NewProject("TestProject", "./testProject", nil)
 }
 
 func TestInitialize(t *testing.T) {
   file, _      := os.Getwd()
   workPath     := path.Join(file, "..", "testProject")
-  project      := NewProject("TestProject", workPath)
+  project      := NewProject("TestProject", workPath, nil)
   tasksPath    := path.Join(workPath, "tasks")
   attachesPath := path.Join(workPath, "attaches")
   
-  _ = project.Initialize()
+  p.Build()
+  p.Load()
   
   if _, err := os.Stat(tasksPath); os.IsNotExist(err) {
     t.Error("Not create Tasks dir")

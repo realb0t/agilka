@@ -17,15 +17,20 @@ type Project struct {
   attachesCount int
 }
 
-func NewProject(Name, Path string) *Project {
-  tasksPath := path.Join(Path, "tasks")
-  attachesPath := path.Join(Path, "attaches")
-  return &Project{ Name, Path, nil,
+func NewProject(name, projectPath string, conf *config.Config) *Project {
+  tasksPath := path.Join(projectPath, "tasks")
+  attachesPath := path.Join(projectPath, "attaches")
+  return &Project{ name, projectPath, conf,
     tasksPath, attachesPath, 0, 0 }
 }
 
+func LoadProject(configPath string) *Project {
+  conf := config.LoadConfig(configPath)
+  return NewProject(conf.Name, configPath, conf)
+}
+
 // Создает новый проект по казанному пути
-func (p *Project) build() {
+func (p *Project) Build() {
 
   // Создает папки
   var paths = []string{ p.tasksPath, 
@@ -43,7 +48,7 @@ func (p *Project) build() {
 }
 
 // Загружает существующий проект
-func (p *Project) load() {
+func (p *Project) Load() {
   p.taskCount = len(p.objectsPaths(p.tasksPath))
   p.attachesCount = len(p.objectsPaths(p.attachesPath))
 }
@@ -70,24 +75,6 @@ func (p *Project) IsExist() bool {
   } else {
     return true
   }
-}
-
-
-// Производит создание проекта
-// на пустой директории
-//
-// И загружает созданный или ранее
-// существующий проект
-func (p *Project) Initialize() (error) {
-  var err error
-
-  if !p.IsExist() {
-    p.build()
-  }
-
-  p.load()
-
-  return err
 }
 
 // Возвращает количество задач в проекте

@@ -1,13 +1,12 @@
 package main
 
 import (
-  //"encoding/json"
   "os"
   "fmt"
   "strings"
-  //"github.com/deiwin/interact"
   "github.com/codegangsta/cli"
   "github.com/realb0t/agilka/project"
+  _ "github.com/deiwin/interact"
 )
 
 func parseFieldsFlags(c *cli.Context) map[string]string {
@@ -22,6 +21,12 @@ func parseFieldsFlags(c *cli.Context) map[string]string {
 }
 
 func main() {
+  defer func() {
+    if err := recover(); err != nil {
+      fmt.Println("Error:", err)
+    }
+  }()
+
   app := cli.NewApp()
   app.Commands = []cli.Command{
     {
@@ -45,13 +50,14 @@ func main() {
       Action:  func(c *cli.Context) {
         projectName := c.String("name")
         projectPath := c.String("path")
-        pr := project.NewProject(projectName, projectPath)
+        pr := project.NewProject(projectName, projectPath, nil)
         if pr.IsExist() {
-          fmt.Println("Project has been exist")
-        } else {
-          fmt.Println("Create project:", projectName)
-          pr.Initialize()
+          panic("Project has been exist")
         }
+
+        fmt.Println("Create project:", projectName)
+        pr.Build()
+        pr.Load()
       },
     },
     {
