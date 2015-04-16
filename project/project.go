@@ -51,6 +51,8 @@ func (p *Project) Build() {
 func (p *Project) Load() {
   p.taskCount = len(p.objectsPaths(p.tasksPath))
   p.attachesCount = len(p.objectsPaths(p.attachesPath))
+  p.Config = config.LoadConfig(
+    config.ConfigPath(p.Path, p.Name))
 }
 
 // Возвращает пути к файлам из директории

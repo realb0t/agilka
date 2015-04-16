@@ -23,13 +23,17 @@ func LoadConfig(filePath string) *Config {
   }
 
   var conf *Config
-  err = json.Unmarshal(jsonData, conf)
+  err = json.Unmarshal(jsonData, &conf)
 
   if err != nil {
     panic(err)
   }
 
   return conf
+}
+
+func ConfigPath(basePath, projectName string) string {
+  return path.Join(basePath, projectName + ".json")
 }
 
 func (c *Config) Save(dirPath string) error {
@@ -39,7 +43,7 @@ func (c *Config) Save(dirPath string) error {
     panic(err)
   }
 
-  configPath := path.Join(dirPath, c.Name + ".json")
-
-  return ioutil.WriteFile(configPath, jsonStr, 0644)
+  return ioutil.WriteFile(
+    ConfigPath(dirPath, c.Name), 
+    jsonStr, 0644)
 }

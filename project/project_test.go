@@ -17,8 +17,8 @@ func TestInitialize(t *testing.T) {
   tasksPath    := path.Join(workPath, "tasks")
   attachesPath := path.Join(workPath, "attaches")
   
-  p.Build()
-  p.Load()
+  project.Build()
+  project.Load()
   
   if _, err := os.Stat(tasksPath); os.IsNotExist(err) {
     t.Error("Not create Tasks dir")
