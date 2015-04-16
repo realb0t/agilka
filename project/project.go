@@ -6,6 +6,7 @@ import (
   "io/ioutil"
   "github.com/realb0t/agilka/config"
   "strconv"
+  _ "fmt"
 )
 
 type Project struct {
@@ -66,7 +67,7 @@ func (p *Project) objectsPaths(objPath string) []string {
   if err != nil {
     panic(err)
   }
-  paths := make([]string, len(infos))
+  paths := make([]string, 0)
   for _, info := range(infos) {
     aPath := path.Join(objPath, info.Name())
     paths = append(paths, aPath)
@@ -95,7 +96,7 @@ func (p *Project) TaskCount() int {
 
 // Возвращает следующий возможный код задачи
 func (p *Project) NextTaskCode() string {
-  return "task" + strconv.Itoa(p.taskCount)
+  return "task" + strconv.Itoa(p.taskCount + 1)
 }
 
 // Удаляет проект целиком с локальным репозиторием
