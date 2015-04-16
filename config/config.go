@@ -15,8 +15,8 @@ func NewConfig(name, repository string) *Config {
   return &Config{name, repository}
 }
 
-func LoadConfig(filePath string) *Config {
-  jsonData, err := ioutil.ReadFile(filePath)
+func LoadConfig(basePath string) *Config {
+  jsonData, err := ioutil.ReadFile(ConfigPath(basePath))
 
   if err != nil {
     panic(err)
@@ -32,8 +32,8 @@ func LoadConfig(filePath string) *Config {
   return conf
 }
 
-func ConfigPath(basePath, projectName string) string {
-  return path.Join(basePath, projectName + ".json")
+func ConfigPath(basePath string) string {
+  return path.Join(basePath, "Agilkafile")
 }
 
 func (c *Config) Save(dirPath string) error {
@@ -44,6 +44,6 @@ func (c *Config) Save(dirPath string) error {
   }
 
   return ioutil.WriteFile(
-    ConfigPath(dirPath, c.Name), 
+    ConfigPath(dirPath), 
     jsonStr, 0644)
 }

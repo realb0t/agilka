@@ -6,6 +6,8 @@ import (
   "strings"
   "github.com/codegangsta/cli"
   "github.com/realb0t/agilka/project"
+  "github.com/realb0t/agilka/task"
+  "encoding/json"
   _ "github.com/deiwin/interact"
 )
 
@@ -61,25 +63,44 @@ func main() {
       },
     },
     {
-      Name:      "ticket",
-      Usage:     "operations for ticker ticket",
+      Name:      "task",
+      Usage:     "operations for ticker task",
       Subcommands: []cli.Command{
         {
           Name:    "create",
           Aliases: []string{"a"},
-          Usage:   "create a new ticket",
+          Usage:   "create a new task",
           Flags:   []cli.Flag {
             cli.StringFlag{
               Name: "json",
-              Value: "{}",
-              Usage: "JSON object for ticket",
+              Value: func() string {
+                defaultTask := task.DefaultTask()
+                json, _ := json.MarshalIndent(defaultTask, "", "  ")
+                return string(json)
+              }(),
+              Usage: "JSON object for task",
+            },
+            cli.StringFlag{
+              Name: "path",
+              Value: func() string {
+                projectPath, _ := os.Getwd()
+                return projectPath
+              }(),
+              Usage: "Project current PATH",
             },
           },
           Action:  func(c *cli.Context) {
-            values := c.Args()
+            pairs := c.Args()
             jsonVal := c.String("json")
-            fmt.Println("added object values: ", values)
-            fmt.Println("added jsonVal: ", jsonVal)
+            projectPath := c.String("path")
+
+            pr := project.LoadProject(projectPath)
+
+            task := task.NewTask(jsonVal)
+            task.ApplyPairs(pairs)
+            task.Save(pr)
+
+            fmt.Println("Created task with code", task.Code)
           },
         },
         {
@@ -88,7 +109,7 @@ func main() {
           Usage:   "complete a task on the list",
           Action:  func(c *cli.Context) {
             objCode := c.Args().First()
-            println("edit ticket by code: ", objCode)
+            println("edit task by code: ", objCode)
           },
         },
       },

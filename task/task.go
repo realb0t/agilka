@@ -20,10 +20,12 @@ type Task struct {
   State string `json:"state"`
 }
 
-// Создание 
-func makeTaskByPairs(pairs []string) *Task {
-  task := &Task{}
+func DefaultTask() *Task {
+  return &Task{ "", "", "", "", "" }
+}
 
+// Применение пар ["ключ=значение"] к задаче
+func (task *Task) ApplyPairs(pairs []string) {
   for _, spair := range(pairs) {
     apair := strings.Split(spair, "=")
     name, val := apair[0], apair[1]
@@ -47,7 +49,12 @@ func makeTaskByPairs(pairs []string) *Task {
       }
     }
   }
+}
 
+// Создание 
+func makeTaskByPairs(pairs []string) *Task {
+  task := &Task{}
+  task.ApplyPairs(pairs)
   return task
 }
 
@@ -57,7 +64,7 @@ func makeTaskByPairs(pairs []string) *Task {
 // - fields string || []byte = JSON
 // - fields []string = [ "field1=value1", "field2=value2" ]
 func NewTask(fields interface{}) *Task {
-  var task *Task
+  task := DefaultTask()
 
   switch f := fields.(type) {
     case []byte:
@@ -105,13 +112,13 @@ func (t *Task) Save(pr *project.Project) error {
     t.Code = pr.NextTaskCode()
   }
 
+  taskPath := pr.TaskPathByCode(t.Code)
+
   jsonStr, err := t.ToJSON()
 
   if err != nil {
     return err
   }
 
-  return ioutil.WriteFile(
-    pr.TaskPathByCode(t.Code), 
-    jsonStr, 0644)
+  return ioutil.WriteFile(taskPath, jsonStr, 0644)
 }

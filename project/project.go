@@ -28,7 +28,9 @@ func NewProject(name, projectPath string, conf *config.Config) *Project {
 // Загрузка проекта по пути
 func LoadProject(configPath string) *Project {
   conf := config.LoadConfig(configPath)
-  return NewProject(conf.Name, configPath, conf)
+  project := NewProject(conf.Name, configPath, conf)
+  project.Load()
+  return project
 }
 
 // Создает новый проект по казанному пути
@@ -53,8 +55,9 @@ func (p *Project) Build() {
 func (p *Project) Load() {
   p.taskCount = len(p.objectsPaths(p.tasksPath))
   p.attachesCount = len(p.objectsPaths(p.attachesPath))
-  p.Config = config.LoadConfig(
-    config.ConfigPath(p.Path, p.Name))
+  if p.Config == nil {
+    p.Config = config.LoadConfig(p.Path)
+  }
 }
 
 // Возвращает пути к файлам из директории
