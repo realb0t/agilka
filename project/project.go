@@ -5,6 +5,7 @@ import (
   "path"
   "io/ioutil"
   "github.com/realb0t/agilka/config"
+  "strconv"
 )
 
 type Project struct {
@@ -24,6 +25,7 @@ func NewProject(name, projectPath string, conf *config.Config) *Project {
     tasksPath, attachesPath, 0, 0 }
 }
 
+// Загрузка проекта по пути
 func LoadProject(configPath string) *Project {
   conf := config.LoadConfig(configPath)
   return NewProject(conf.Name, configPath, conf)
@@ -79,6 +81,10 @@ func (p *Project) IsExist() bool {
   }
 }
 
+func (p *Project) TaskPathByCode(code string) string {
+  return path.Join(p.tasksPath, code + ".json")
+}
+
 // Возвращает количество задач в проекте
 func (p *Project) TaskCount() int {
   return p.taskCount
@@ -86,7 +92,7 @@ func (p *Project) TaskCount() int {
 
 // Возвращает следующий возможный код задачи
 func (p *Project) NextTaskCode() string {
-  return "task0001"
+  return "task" + strconv.Itoa(p.taskCount)
 }
 
 // Удаляет проект целиком с локальным репозиторием

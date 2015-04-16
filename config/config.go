@@ -40,7 +40,7 @@ func (c *Config) Save(dirPath string) error {
   jsonStr, err := json.MarshalIndent(c, "", "  ")
   
   if err != nil {
-    panic(err)
+    return err
   }
 
   return ioutil.WriteFile(

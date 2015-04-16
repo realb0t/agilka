@@ -2,10 +2,12 @@
 package task
 
 import (
+  "github.com/realb0t/agilka/project"
   "encoding/json"
   "reflect"
   "strings"
   "strconv"
+  "io/ioutil"
   //"fmt"
 )
 
@@ -95,4 +97,21 @@ func (t *Task) ApplyDefaultCode(code string) *Task {
   }
 
   return t
+}
+
+// Сохранить задачу для указанного проекта
+func (t *Task) Save(pr *project.Project) error {
+  if t.Code == "" {
+    t.Code = pr.NextTaskCode()
+  }
+
+  jsonStr, err := t.ToJSON()
+
+  if err != nil {
+    return err
+  }
+
+  return ioutil.WriteFile(
+    pr.TaskPathByCode(t.Code), 
+    jsonStr, 0644)
 }
