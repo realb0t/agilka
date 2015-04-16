@@ -35,7 +35,7 @@ func LoadProject(configPath string) *Project {
 }
 
 // Создает новый проект по казанному пути
-func (p *Project) Build() {
+func (p *Project) Build() *Project {
 
   // Создает папки
   var paths = []string{ p.tasksPath, 
@@ -50,15 +50,17 @@ func (p *Project) Build() {
   // Создает конфигурационный файл
   p.Config = config.NewConfig(p.Name, "")
   p.Config.Save(p.Path)
+  return p
 }
 
 // Загружает существующий проект
-func (p *Project) Load() {
+func (p *Project) Load() *Project {
   p.taskCount = len(p.objectsPaths(p.tasksPath))
   p.attachesCount = len(p.objectsPaths(p.attachesPath))
   if p.Config == nil {
     p.Config = config.LoadConfig(p.Path)
   }
+  return p
 }
 
 // Возвращает пути к файлам из директории

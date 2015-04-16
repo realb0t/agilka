@@ -5,8 +5,9 @@ import (
   "fmt"
   "strings"
   "github.com/codegangsta/cli"
-  "github.com/realb0t/agilka/project"
+  _ "github.com/realb0t/agilka/project"
   "github.com/realb0t/agilka/task"
+  "github.com/realb0t/agilka/operation"
   "encoding/json"
   _ "github.com/deiwin/interact"
 )
@@ -29,12 +30,17 @@ func main() {
     }
   }()
 
+  currentPath := func() string {
+    cPath, _ := os.Getwd()
+    return cPath
+  }
+
   app := cli.NewApp()
   app.Commands = []cli.Command{
     {
-      Name:    "init",
-      Usage:   "Initialize new project in current dirrectory",
-      Flags:   []cli.Flag {
+      Name:  "init",
+      Usage: "Initialize new project in current dirrectory",
+      Flags: []cli.Flag {
         cli.StringFlag{
           Name: "name",
           Value: "AgilkaProject",
@@ -42,65 +48,38 @@ func main() {
         },
         cli.StringFlag{
           Name: "path",
-          Value: func() string {
-            projectPath, _ := os.Getwd()
-            return projectPath
-          }(),
+          Value: currentPath(),
           Usage: "Project current PATH",
         },
       },
       Action:  func(c *cli.Context) {
-        projectName := c.String("name")
-        projectPath := c.String("path")
-        pr := project.NewProject(projectName, projectPath, nil)
-        if pr.IsExist() {
-          panic("Project has been exist")
-        }
-
-        fmt.Println("Create project:", projectName)
-        pr.Build()
-        pr.Load()
+        pr := operation.NewOperation(c).CreateProject()
+        fmt.Println("Create project:", pr.Name)
       },
     },
     {
-      Name:      "task",
-      Usage:     "operations for ticker task",
+      Name:  "task",
+      Usage: "Operations for ticker task",
       Subcommands: []cli.Command{
         {
           Name:    "create",
           Aliases: []string{"a"},
-          Usage:   "create a new task",
+          Usage:   "Create a new task",
           Flags:   []cli.Flag {
             cli.StringFlag{
               Name: "json",
-              Value: func() string {
-                defaultTask := task.DefaultTask()
-                json, _ := json.MarshalIndent(defaultTask, "", "  ")
-                return string(json)
-              }(),
+              Value: task.DefaultTaskJSON(),
               Usage: "JSON object for task",
             },
             cli.StringFlag{
               Name: "path",
-              Value: func() string {
-                projectPath, _ := os.Getwd()
-                return projectPath
-              }(),
+              Value: currentPath(),
               Usage: "Project current PATH",
             },
           },
-          Action:  func(c *cli.Context) {
-            pairs := c.Args()
-            jsonVal := c.String("json")
-            projectPath := c.String("path")
-
-            pr := project.LoadProject(projectPath)
-
-            task := task.NewTask(jsonVal)
-            task.ApplyPairs(pairs)
-            task.Save(pr)
-
-            fmt.Println("Created task with code", task.Code)
+          Action: func(c *cli.Context) {
+            t := operation.NewOperation(c).CreateTask()
+            fmt.Println("Created task with code", t.Code)
           },
         },
         {

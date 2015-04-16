@@ -2,7 +2,7 @@
 package task
 
 import (
-  "github.com/realb0t/agilka/project"
+  //"github.com/realb0t/agilka/project"
   "encoding/json"
   "reflect"
   "strings"
@@ -22,6 +22,10 @@ type Task struct {
 
 func DefaultTask() *Task {
   return &Task{ "", "", "", "", "" }
+}
+
+func DefaultTaskJSON() string {
+  return string(DefaultTask.toJSON())
 }
 
 // Применение пар ["ключ=значение"] к задаче
@@ -107,13 +111,7 @@ func (t *Task) ApplyDefaultCode(code string) *Task {
 }
 
 // Сохранить задачу для указанного проекта
-func (t *Task) Save(pr *project.Project) error {
-  if t.Code == "" {
-    t.Code = pr.NextTaskCode()
-  }
-
-  taskPath := pr.TaskPathByCode(t.Code)
-
+func (t *Task) Save(taskPath string) error {
   jsonStr, err := t.ToJSON()
 
   if err != nil {
