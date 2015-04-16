@@ -25,7 +25,8 @@ func DefaultTask() *Task {
 }
 
 func DefaultTaskJSON() string {
-  return string(DefaultTask.toJSON())
+  jsonData, _ := DefaultTask().ToJSON()
+  return string(jsonData)
 }
 
 // Применение пар ["ключ=значение"] к задаче
