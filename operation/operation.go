@@ -4,7 +4,7 @@ import (
   "github.com/realb0t/agilka/task"
   "github.com/realb0t/agilka/project"
   "github.com/codegangsta/cli"
-  //"io/ioutil"
+  "io/ioutil"
   "os"
   //"fmt"
 )
@@ -48,3 +48,20 @@ func (o *Operation) CreateTask() *task.Task {
   return task
 }
 
+// Езменение задачи
+func (o *Operation) EditTask() *task.Task {
+  pr       := project.LoadProject(o.ctx.String("path"))
+  taskCode := o.ctx.Args().First()
+  pairs    := o.ctx.Args().Tail()
+  taskPath := pr.TaskPathByCode(taskCode)
+  jsonData, err := ioutil.ReadFile(taskPath)
+
+  if err != nil {
+    panic(err)
+  }
+
+  task := task.NewTask(jsonData)
+  task.ApplyPairs(pairs)
+  _ = task.Save(taskPath)
+  return task
+}

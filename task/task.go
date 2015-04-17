@@ -29,6 +29,34 @@ func DefaultTaskJSON() string {
   return string(jsonData)
 }
 
+// Создание нового эксземляра задачи
+//
+// Поддерживает следующие варианты:
+// - fields string || []byte = JSON
+// - fields []string = [ "field1=value1", "field2=value2" ]
+func NewTask(fields interface{}) *Task {
+  task := DefaultTask()
+
+  switch f := fields.(type) {
+    case []byte:
+      err := json.Unmarshal(f, &task)
+      if err != nil {
+        panic(err)
+      }
+    case string:
+      err := json.Unmarshal([]byte(f), &task)
+      if err != nil {
+        panic(err)
+      }
+    case []string:
+      task.ApplyPairs(f)
+    default:
+      task = &Task{}
+  }
+  
+  return task
+}
+
 // Применение пар ["ключ=значение"] к задаче
 func (task *Task) ApplyPairs(pairs []string) {
   for _, spair := range(pairs) {
@@ -56,46 +84,6 @@ func (task *Task) ApplyPairs(pairs []string) {
   }
 }
 
-// Создание 
-func makeTaskByPairs(pairs []string) *Task {
-  task := &Task{}
-  task.ApplyPairs(pairs)
-  return task
-}
-
-// Создание нового эксземляра задачи
-//
-// Поддерживает следующие варианты:
-// - fields string || []byte = JSON
-// - fields []string = [ "field1=value1", "field2=value2" ]
-func NewTask(fields interface{}) *Task {
-  task := DefaultTask()
-
-  switch f := fields.(type) {
-    case []byte:
-      err := json.Unmarshal(f, &task)
-      if err != nil {
-        panic(err)
-      }
-    case string:
-      err := json.Unmarshal([]byte(f), &task)
-      if err != nil {
-        panic(err)
-      }
-    case []string:
-      task = makeTaskByPairs(f)
-    default:
-      task = &Task{}
-  }
-  
-  return task
-}
-
-func NewTaskWithDefaultCode(defaultCode string, fields interface{}) *Task {
-  task := NewTask(fields)
-  task.ApplyDefaultCode(defaultCode)
-  return task
-}
 
 // Перевод задачи в формат JSON
 func (t *Task) ToJSON() ([]byte, error) {

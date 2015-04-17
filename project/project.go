@@ -53,7 +53,7 @@ func (p *Project) Build() *Project {
   return p
 }
 
-// Загружает существующий проект
+// Загружает данные по проекту
 func (p *Project) Load() *Project {
   p.taskCount = len(p.objectsPaths(p.tasksPath))
   p.attachesCount = len(p.objectsPaths(p.attachesPath))

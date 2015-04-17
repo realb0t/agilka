@@ -62,8 +62,9 @@ func main() {
       Subcommands: []cli.Command{
         {
           Name:    "create",
-          Aliases: []string{"a"},
-          Usage:   "Create a new task",
+          Aliases: []string{"c", "new", "add"},
+          Usage:   "agilka task create [field=value] ... [fieldN=valueN] --json='{}'",
+          Description: "Create new task",
           Flags:   []cli.Flag {
             cli.StringFlag{
               Name: "json",
@@ -83,11 +84,19 @@ func main() {
         },
         {
           Name:    "edit",
-          Aliases: []string{"c"},
-          Usage:   "complete a task on the list",
+          Aliases: []string{"e", "update", "change"},
+          Usage:   "agilka task edit [taskCode] [field=value] ... [fieldN=valueN]",
+          Description: "Edit exist task",
+          Flags:   []cli.Flag {
+            cli.StringFlag{
+              Name: "path",
+              Value: currentPath(),
+              Usage: "Project current PATH",
+            },
+          },
           Action:  func(c *cli.Context) {
-            objCode := c.Args().First()
-            println("edit task by code: ", objCode)
+            t := operation.NewOperation(c).EditTask()
+            println("Edit task with code", t.Code)
           },
         },
       },
