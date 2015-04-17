@@ -20,10 +20,12 @@ type Task struct {
   State string `json:"state"`
 }
 
+// Объект дефолтной задачи
 func DefaultTask() *Task {
-  return &Task{ "", "", "", "", "" }
+  return &Task{ "", "", "", "", "backlog" }
 }
 
+// JSON от дефолтной задачи
 func DefaultTaskJSON() string {
   jsonData, _ := DefaultTask().ToJSON()
   return string(jsonData)
