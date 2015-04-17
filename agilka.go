@@ -8,7 +8,6 @@ import (
   _ "github.com/realb0t/agilka/project"
   "github.com/realb0t/agilka/task"
   "github.com/realb0t/agilka/operation"
-  "encoding/json"
   _ "github.com/deiwin/interact"
 )
 
