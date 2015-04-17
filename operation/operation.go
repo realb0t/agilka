@@ -5,7 +5,7 @@ import (
   "github.com/realb0t/agilka/project"
   "github.com/codegangsta/cli"
   //"io/ioutil"
-  //"os"
+  "os"
   //"fmt"
 )
 
@@ -39,6 +39,10 @@ func (o *Operation) CreateTask() *task.Task {
     task.Code = pr.NextTaskCode()
   }
   taskPath := pr.TaskPathByCode(task.Code)
+  _, err := os.Stat(taskPath)
+  if err == nil {
+    panic("Task with code " + task.Code + " is exists")
+  }
 
   _ = task.Save(taskPath)
   return task
