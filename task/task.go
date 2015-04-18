@@ -8,16 +8,23 @@ import (
   "strings"
   "strconv"
   "io/ioutil"
-  //"fmt"
+  valid "github.com/asaskevich/govalidator"
 )
 
 // Структура задачи
 type Task struct {
-  Code string `json:"code"`
+  Code string `json:"code" valid:"required,alphanum"`
   Title string `json:"title"`
   Desc string `json:"desc"`
-  Author string `json:"author"`
-  State string `json:"state"`
+  Author string `json:"author" valid:"alphanum"`
+  State string `json:"state" valid:"task_state"`
+}
+
+func AvalibleStates() map[string]bool {
+  return map[string]bool{
+    "backlog": true, "todo": true,
+    "doing": true, "done": true,
+  }
 }
 
 // Объект дефолтной задачи
@@ -103,10 +110,24 @@ func (t *Task) ApplyDefaultCode(code string) *Task {
 
 // Сохранить задачу для указанного проекта
 func (t *Task) Save(taskPath string) error {
+  valid.TagMap["task_state"] = valid.Validator(func(state string) bool {
+    return AvalibleStates()[state]
+  })
+
+  result, err := valid.ValidateStruct(t)
+
+  if err != nil {
+    panic(err)
+  }
+
+  if !result {
+    panic("Task is not valid")
+  }
+
   jsonStr, err := t.ToJSON()
 
   if err != nil {
-    return err
+    panic(err)
   }
 
   return ioutil.WriteFile(taskPath, jsonStr, 0644)
