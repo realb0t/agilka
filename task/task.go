@@ -60,7 +60,6 @@ func NewTask(fields interface{}) *Task {
     case []string:
       task.ApplyPairs(f)
     default:
-      task = &Task{}
   }
   
   return task
@@ -93,6 +92,23 @@ func (task *Task) ApplyPairs(pairs []string) {
   }
 }
 
+// Запланировать задачу
+func (t *Task) Plan() error {
+  t.State = "todo"
+  return nil
+}
+
+// Начать делать задачу
+func (t *Task) Start() error {
+  t.State = "doing"
+  return nil
+}
+
+// Завершить задачу
+func (t *Task) Done() error {
+  t.State = "done"
+  return nil
+}
 
 // Перевод задачи в формат JSON
 func (t *Task) ToJSON() ([]byte, error) {
@@ -108,20 +124,20 @@ func (t *Task) ApplyDefaultCode(code string) *Task {
   return t
 }
 
-// Сохранить задачу для указанного проекта
-func (t *Task) Save(taskPath string) error {
+func (t *Task) validate() (bool, error) {
   valid.TagMap["task_state"] = valid.Validator(func(state string) bool {
     return AvalibleStates()[state]
   })
 
-  result, err := valid.ValidateStruct(t)
+  return valid.ValidateStruct(t)
+}
+
+// Сохранить задачу для указанного проекта
+func (t *Task) Save(taskPath string) error {
+  _, err := t.validate()
 
   if err != nil {
     panic(err)
-  }
-
-  if !result {
-    panic("Task is not valid")
   }
 
   jsonStr, err := t.ToJSON()
