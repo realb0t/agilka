@@ -133,33 +133,18 @@ func (t *Task) Validate() (bool, error) {
   return valid.ValidateStruct(t)
 }
 
-// Сохранить задачу для указанного проекта
-func (t *Task) Save(taskPath string) error {
-  _, err := t.Validate()
-
-  if err != nil {
-    panic(err)
-  }
-
-  jsonStr, err := t.ToJSON()
-
-  if err != nil {
-    panic(err)
-  }
-
-  return ioutil.WriteFile(taskPath, jsonStr, 0644)
-}
-
 // Структура тикета (задача как файл)
 type Ticket struct {
   Task *Task
   path string
 }
 
+// Создание тикета
 func NewTicket(task *Task, path string) *Ticket {
   return &Ticket{task, path}
 }
 
+// Загрузить существующий тикет
 func LoadTicket(path string) *Ticket {
   jsonData, err := ioutil.ReadFile(path)
 
@@ -170,11 +155,25 @@ func LoadTicket(path string) *Ticket {
   return NewTicket(NewTask(jsonData), path)
 }
 
+// Существует ли данный тикет
 func (t *Ticket) IsExist() bool {
   _, err := os.Stat(t.path)
   return err == nil
 }
 
+// Сохранить тикет
 func (t *Ticket) Save() error {
-  return t.Task.Save(t.path)
+  _, err := t.Task.Validate()
+
+  if err != nil {
+    panic(err)
+  }
+
+  jsonStr, err := t.Task.ToJSON()
+
+  if err != nil {
+    panic(err)
+  }
+
+  return ioutil.WriteFile(t.path, jsonStr, 0644)
 }
