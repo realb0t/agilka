@@ -5,7 +5,6 @@ import (
   "github.com/realb0t/agilka/project"
   "github.com/codegangsta/cli"
   //"io/ioutil"
-  "os"
   //"fmt"
 )
 
@@ -32,20 +31,18 @@ func (o *Operation) CreateProject() *project.Project {
 // Создание новой задачи
 func (o *Operation) CreateTask() *task.Task {
   pr := project.LoadProject(o.ctx.String("path"))
-  task := task.NewTask(o.ctx.String("json"))
-  task.ApplyPairs(o.ctx.Args())
+  tsk := task.NewTask(o.ctx.String("json"))
+  tsk.ApplyPairs(o.ctx.Args())
+  tsk.ApplyDefaultCode(pr.NextTaskCode())
 
-  if task.Code == "" {
-    task.Code = pr.NextTaskCode()
-  }
-  taskPath := pr.TaskPathByCode(task.Code)
-  _, err := os.Stat(taskPath)
-  if err == nil {
-    panic("Task with code " + task.Code + " is exists")
+  taskPath := pr.TaskPathByCode(tsk.Code)
+  ticket := task.NewTicket(tsk, taskPath)
+  if ticket.IsExist() {
+    panic("Task with code " + ticket.Task.Code + " is exists")
   }
 
-  _ = task.Save(taskPath)
-  return task
+  _ = ticket.Save()
+  return ticket.Task
 }
 
 // Загрузить тикет

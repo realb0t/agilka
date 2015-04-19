@@ -8,6 +8,7 @@ import (
   "strings"
   "strconv"
   "io/ioutil"
+  "os"
   valid "github.com/asaskevich/govalidator"
 )
 
@@ -124,7 +125,7 @@ func (t *Task) ApplyDefaultCode(code string) *Task {
   return t
 }
 
-func (t *Task) validate() (bool, error) {
+func (t *Task) Validate() (bool, error) {
   valid.TagMap["task_state"] = valid.Validator(func(state string) bool {
     return AvalibleStates()[state]
   })
@@ -134,7 +135,7 @@ func (t *Task) validate() (bool, error) {
 
 // Сохранить задачу для указанного проекта
 func (t *Task) Save(taskPath string) error {
-  _, err := t.validate()
+  _, err := t.Validate()
 
   if err != nil {
     panic(err)
@@ -167,6 +168,11 @@ func LoadTicket(path string) *Ticket {
   }
 
   return NewTicket(NewTask(jsonData), path)
+}
+
+func (t *Ticket) IsExist() bool {
+  _, err := os.Stat(t.path)
+  return err == nil
 }
 
 func (t *Ticket) Save() error {
