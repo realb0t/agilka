@@ -148,3 +148,27 @@ func (t *Task) Save(taskPath string) error {
 
   return ioutil.WriteFile(taskPath, jsonStr, 0644)
 }
+
+// Структура тикета (задача как файл)
+type Ticket struct {
+  Task *Task
+  path string
+}
+
+func NewTicket(task *Task, path string) *Ticket {
+  return &Ticket{task, path}
+}
+
+func LoadTicket(path string) *Ticket {
+  jsonData, err := ioutil.ReadFile(path)
+
+  if err != nil {
+    panic(err)
+  }
+
+  return NewTicket(NewTask(jsonData), path)
+}
+
+func (t *Ticket) Save() error {
+  return t.Task.Save(t.path)
+}

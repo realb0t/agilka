@@ -54,37 +54,37 @@ $ agilka init
 Создать объект - все поля будут задаваться по очереди.
 Code будет сгенерирован
 ```
-$ agilka ticket create code=gooVal title='Hello world' --json='{"code": "gooBar"}'
+$ agilka task create code=gooVal title='Hello world' --json='{"code": "gooBar"}'
 ```
 
 Изменить все поля по очереди (в тестовом редакторе)
 ```
-$ agilka ticket edit <objectAliace> fieldName=value
+$ agilka task edit <objectAliace> fieldName=value
 ```
 
 Изменить конкретное поле (в тестовом редакторе)
 ```
-$ agilka ticket edit <objectAliace> -f fieldName
+$ agilka task edit <objectAliace> -f fieldName
 ```
 
 Вывести в todo
 ```
-$ agilka ticket todo <objectAliace>
+$ agilka task plan <objectAliace>
 ```
 
 Вывести в process
 ```
-$ agilka ticket process <objectAliace>
+$ agilka task start <objectAliace>
 ```
 
 Вывести в complete
 ```
-$ agilka ticket complete <objectAliace>
+$ agilka task done <objectAliace>
 ```
 
 Удалить объект
 ```
-$ agilka ticket rm <objectAliace>
+$ agilka task rm <objectAliace>
 ```
 
 ## Структура файлов

@@ -99,6 +99,54 @@ func main() {
             println("Edit task with code", t.Code)
           },
         },
+        {
+          Name:    "plan",
+          Usage:   "agilka task plan [taskCode]",
+          Description: "Planned task",
+          Flags:   []cli.Flag {
+            cli.StringFlag{
+              Name: "path",
+              Value: currentPath(),
+              Usage: "Project current PATH",
+            },
+          },
+          Action:  func(c *cli.Context) {
+            t := operation.NewOperation(c).DoTask("plan")
+            println("Task", t.Code, "in todo")
+          },
+        },
+        {
+          Name:    "start",
+          Usage:   "agilka task start [taskCode]",
+          Description: "Start task",
+          Flags:   []cli.Flag {
+            cli.StringFlag{
+              Name: "path",
+              Value: currentPath(),
+              Usage: "Project current PATH",
+            },
+          },
+          Action:  func(c *cli.Context) {
+            t := operation.NewOperation(c).DoTask("start")
+            println("Task", t.Code, "in doing")
+          },
+        },
+        {
+          Name:    "done",
+          Usage:   "agilka task done [taskCode]",
+          Description: "Done task",
+          Flags:   []cli.Flag {
+            cli.StringFlag{
+              Name: "path",
+              Value: currentPath(),
+              Usage: "Project current PATH",
+            },
+          },
+          Action:  func(c *cli.Context) {
+            t := operation.NewOperation(c).DoTask("done")
+            println("Task", t.Code, "in done")
+          },
+        },
       },
     },
   }

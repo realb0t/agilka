@@ -4,7 +4,7 @@ import (
   "github.com/realb0t/agilka/task"
   "github.com/realb0t/agilka/project"
   "github.com/codegangsta/cli"
-  "io/ioutil"
+  //"io/ioutil"
   "os"
   //"fmt"
 )
@@ -48,20 +48,36 @@ func (o *Operation) CreateTask() *task.Task {
   return task
 }
 
+// Загрузить тикет
+func (o *Operation) loadTicket() *task.Ticket {
+  pr := project.LoadProject(o.ctx.String("path"))
+  taskCode := o.ctx.Args().First()
+  ticketPath := pr.TaskPathByCode(taskCode)
+  return task.LoadTicket(ticketPath)
+}
+
 // Езменение задачи
 func (o *Operation) EditTask() *task.Task {
-  pr       := project.LoadProject(o.ctx.String("path"))
-  taskCode := o.ctx.Args().First()
-  pairs    := o.ctx.Args().Tail()
-  taskPath := pr.TaskPathByCode(taskCode)
-  jsonData, err := ioutil.ReadFile(taskPath)
+  ticket := o.loadTicket()
+  ticket.Task.ApplyPairs(o.ctx.Args().Tail())
+  _ = ticket.Save()
+  return ticket.Task
+}
+
+func (o *Operation) DoTask(action string) *task.Task {
+  var err error
+  ticket := o.loadTicket()
+
+  switch action {
+    case "plan": err = ticket.Task.Plan()
+    case "start": err = ticket.Task.Start()
+    case "done": err = ticket.Task.Done()
+  }
 
   if err != nil {
     panic(err)
   }
 
-  task := task.NewTask(jsonData)
-  task.ApplyPairs(pairs)
-  _ = task.Save(taskPath)
-  return task
+  _ = ticket.Save()
+  return ticket.Task
 }
