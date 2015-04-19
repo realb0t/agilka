@@ -63,7 +63,7 @@ func TestTaskDontApplyingDefaultCode(t *testing.T) {
 func TestValidateCorrectCode(t *testing.T) {
   task := NewTask(nil)
   task.Code = "testCode123"
-  _, err := task.validate()
+  _, err := task.Validate()
   if err != nil {
     t.Error("Not correct code validation")
   }
@@ -72,7 +72,7 @@ func TestValidateCorrectCode(t *testing.T) {
 func TestValidateUncorrectCode(t *testing.T) {
   task := NewTask(nil)
   task.Code = "this is uncorrect_code *"
-  _, err := task.validate()
+  _, err := task.Validate()
   if err == nil {
     t.Error("Not error with uncorrect code")
   }
@@ -83,7 +83,7 @@ func TestAvalibleState(t *testing.T) {
   states := []string{ "backlog", "todo", "doing", "done" }
   for _, state := range(states) {
     task.State = state
-    _, err := task.validate()
+    _, err := task.Validate()
 
     if err != nil {
       t.Error("Not valid state", state)
@@ -94,7 +94,7 @@ func TestAvalibleState(t *testing.T) {
 func TestWithUncorrectState(t *testing.T) {
   task := NewTask(`{ "code": "testCode" }`)
   task.State = "uncorrectState"
-  _, err := task.validate()
+  _, err := task.Validate()
 
   if err == nil {
     t.Error("Not validate uncorrect state")
