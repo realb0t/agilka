@@ -38,7 +38,7 @@ func main() {
   app.Commands = []cli.Command{
     {
       Name:  "init",
-      Usage: "Initialize new project in current dirrectory",
+      Usage: "Initialize new project in current directory",
       Flags: []cli.Flag {
         cli.StringFlag{
           Name: "name",
