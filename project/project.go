@@ -63,6 +63,10 @@ func (p *Project) Load() *Project {
   return p
 }
 
+func (p *Project) TaskPaths() []string {
+  return p.objectsPaths(p.tasksPath)
+}
+
 // Возвращает пути к файлам из директории
 func (p *Project) objectsPaths(objPath string) []string {
   infos, err := ioutil.ReadDir(objPath)

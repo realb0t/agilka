@@ -147,6 +147,21 @@ func main() {
             println("Task", t.Code, "in done")
           },
         },
+        {
+          Name:    "list",
+          Usage:   "agilka task list [state1] ... [stateN]",
+          Description: "Print all task in states",
+          Flags:   []cli.Flag {
+            cli.StringFlag{
+              Name: "path",
+              Value: currentPath(),
+              Usage: "Project current PATH",
+            },
+          },
+          Action:  func(c *cli.Context) {
+            operation.NewOperation(c).PrintTasks()
+          },
+        },
       },
     },
   }

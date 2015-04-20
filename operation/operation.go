@@ -4,8 +4,9 @@ import (
   "github.com/realb0t/agilka/task"
   "github.com/realb0t/agilka/project"
   "github.com/codegangsta/cli"
-  //"io/ioutil"
-  //"fmt"
+  "fmt"
+  "strings"
+  "github.com/labstack/gommon/color"
 )
 
 type Operation struct {
@@ -61,6 +62,7 @@ func (o *Operation) EditTask() *task.Task {
   return ticket.Task
 }
 
+// Выполнить с задачей действие
 func (o *Operation) DoTask(action string) *task.Task {
   var err error
   ticket := o.loadTicket()
@@ -77,4 +79,60 @@ func (o *Operation) DoTask(action string) *task.Task {
 
   _ = ticket.Save()
   return ticket.Task
+}
+
+func (o *Operation) PrintTasks() {
+  var useStates map[string]bool
+  ticketsByState := map[string][]*task.Ticket{
+    "backlog": []*task.Ticket{},
+    "todo": []*task.Ticket{},
+    "doing": []*task.Ticket{},
+    "done": []*task.Ticket{},
+  }
+
+  pr := project.LoadProject(o.ctx.String("path"))
+  states := o.ctx.Args()
+
+  if len(states) == 0 {
+    useStates = task.AvalibleStates()
+  } else {
+    useStates = make(map[string]bool)
+    for _, state := range(states) {
+      useStates[state] = true
+    }
+  }
+
+  for _, taskPath := range(pr.TaskPaths()) {
+    ticket := task.LoadTicket(taskPath)
+    if useStates[ticket.Task.State] {
+      ticketsByState[ticket.Task.State] = append(ticketsByState[ticket.Task.State], ticket)
+    }
+  }
+
+  maxTaskCodeLen := 10
+  for _, tickets := range(ticketsByState) {
+    for _, ticket := range(tickets) {
+      if (maxTaskCodeLen < len(ticket.Task.Code)) {
+        maxTaskCodeLen = len(ticket.Task.Code)
+      }
+    }
+  }
+
+  formatStr := `%-` + fmt.Sprintf("%d", maxTaskCodeLen) + "s | %s\n"
+  startBorder := strings.Repeat("-", maxTaskCodeLen - 3)
+  endBorder := strings.Repeat("-", 20)
+  fmt.Println(color.Bold(startBorder + endBorder))
+  fmt.Printf(color.Bold(formatStr), "CODE:", "TITLE:")
+  fmt.Println(color.Bold(startBorder + endBorder))
+  for state, tickets := range(ticketsByState) {
+    if len(tickets) > 0 {
+      fmt.Print(color.Dim(startBorder))
+      fmt.Printf(color.Bold(" %-7s "), strings.ToUpper(state))
+      fmt.Println(color.Dim(strings.Repeat("-", 20 - 9)))
+
+      for _, ticket := range(tickets) {
+        fmt.Printf(formatStr, ticket.Task.Code, ticket.Task.Title)
+      }
+    }
+  }
 }

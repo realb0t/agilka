@@ -28,6 +28,14 @@ func AvalibleStates() map[string]bool {
   }
 }
 
+func States() []string {
+  var states = []string{}
+  for state, _ := range(AvalibleStates()) {
+    states = append(states, state)
+  }
+  return states
+}
+
 // Объект дефолтной задачи
 func DefaultTask() *Task {
   return &Task{ "", "", "", "", "backlog" }
